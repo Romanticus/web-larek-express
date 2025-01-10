@@ -5,7 +5,8 @@ interface IImage {
   originalName: string;
 }
 
-interface IProduct {
+export interface IProduct {
+  _id?:string;
   title: string;
   image: IImage;
   category: string;

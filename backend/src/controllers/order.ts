@@ -1,45 +1,59 @@
 import mongoose, { Types } from 'mongoose';
 import { faker } from '@faker-js/faker';
-import Product from '../models/product';
+import { Request, Response, NextFunction } from 'express';
+import Product, { IProduct } from '../models/product';
 
 import BadRequestError from '../errors/bad-request-error';
 
-export default async (req: any, res: any, next: any) => {
-  try {
-    const { total, items } = req.body;
+export default (req: Request, res: Response, next: NextFunction) => {
+  const { total, items } = req.body;
+  const productIds = items.map((id: string) => new Types.ObjectId(id));
 
-    const productIds = items.map((id: string) => new Types.ObjectId(id));
-    const products = await Product.find({
-      _id: { $in: productIds },
-      price: { $ne: null },
-    });
-
-    const missingProducts = items.filter(
-      (id: string) => !products.some((product: any) => product._id.toString() === id),
-    );
-    if (missingProducts.length > 0) {
-      throw new BadRequestError(
-        `Товар с id ${missingProducts.join(', ')} не найден`,
+  Product.find({
+    _id: { $in: productIds },
+  })
+    .then((products) => {
+      const missingProducts = items.filter(
+        (id: string) => !products.some((product: IProduct) => product._id!.toString() === id),
       );
-    }
 
-    const calculatedTotal = products.reduce(
-      (sum: number, product: any) => sum + product.price,
-      0,
-    );
+      if (missingProducts.length > 0) {
+        return Promise.reject(
+          new BadRequestError(
+            `Товар с id ${missingProducts.join(', ')} не найден`,
+          ),
+        );
+      }
 
-    if (calculatedTotal !== total) {
-      throw new BadRequestError('Неверная сумма заказа');
-    }
+      const unbuyingProducts = items.filter(
+        (id: string) => !products.some(
+          (product: any) => product._id.toString() === id && product.price !== null,
+        ),
+      );
 
-    const orderId = faker.string.uuid();
+      if (unbuyingProducts.length > 0) {
+        return Promise.reject(
+          new BadRequestError(
+            `Товар с id ${unbuyingProducts.join(', ')} не продаётся`,
+          ),
+        );
+      }
 
-    res.send({ id: orderId, total });
-  } catch (error) {
-    if (error instanceof mongoose.Error.ValidationError) {
-      return next(new BadRequestError('Validation failed'));
-    }
+      const calculatedTotal = products.reduce(
+        (sum: number, product: IProduct) => sum + product.price!,
+        0,
+      );
+      if (calculatedTotal !== total) {
+        return Promise.reject(new BadRequestError('Неверная сумма заказа'));
+      }
 
-    return next(error);
-  }
+      const orderId = faker.string.uuid();
+      return res.send({ id: orderId, total });
+    })
+    .catch((error) => {
+      if (error instanceof mongoose.Error.ValidationError) {
+        return next(new BadRequestError('Validation failed'));
+      }
+      return next(error);
+    });
 };

@@ -5,9 +5,9 @@ import NotFoundError from '../errors/not-found-error';
 
 export default function errorHandler(
   err: Error,
-  req: Request,
+  _req: Request,
   res: Response,
-  next: NextFunction,
+  _next: NextFunction,
 ) {
   if (err instanceof BadRequestError) {
     return res.status(err.statusCode).send({ message: err.message });
