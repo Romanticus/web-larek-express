@@ -6,8 +6,7 @@ import productRouter from "./routes/product";
 import { errors } from "celebrate";
 import errorHandler from "./middlewares/error-handler";
 import orderRouter from "./routes/order";
-import { errorLogger } from "express-winston";
-import { requestLogger } from "middlewares/logger";
+import { errorLogger, requestLogger } from "./middlewares/logger";
 
 const app = express();
 const PORT = process.env.PORT || 3000;
