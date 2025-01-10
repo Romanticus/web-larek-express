@@ -2,11 +2,26 @@ import mongoose from "mongoose";
 
 interface IProduct {
   title: string;
-  image: { fileName: string; originalName: string };
+  image: IImage;
   category: string;
   description?: string;
   price?: number | null;
 }
+
+interface IImage {
+  fileName: string;
+  originalName: string;
+}
+const imageSchema = new mongoose.Schema<IImage>({
+  fileName: {
+    type: String,
+    required: true,
+  },
+  originalName: {
+    type: String,
+    required: true,
+  },
+});
 
 const productSchema = new mongoose.Schema<IProduct>({
   title: {
@@ -17,16 +32,7 @@ const productSchema = new mongoose.Schema<IProduct>({
     unique: true,
   },
 
-  image: {
-    fileName: {
-      type: String,
-      required: true,
-    },
-    originalName: {
-      type: String,
-      required: true,
-    },
-  },
+  image: imageSchema,
   category: {
     type: String,
     required: true,
