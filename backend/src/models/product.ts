@@ -22,7 +22,7 @@ const imageSchema = new mongoose.Schema<IImage>({
     required: [true, 'Поле "originalName" должно быть заполнено'],
   },
 });
- 
+
 const productSchema = new mongoose.Schema<IProduct>({
   title: {
     type: String,

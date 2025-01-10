@@ -16,33 +16,29 @@ export const getProducts = async (req: Request, res: Response) => {
   }
 };
 
-// export const createProduct = (req: Request, res: Response) => {
-//   const { title, image, category, description, price } = req.body;
-
-//   return Product.create({ title, image, category, description, price })
-//     .then((product) => res.send(product))
-//     .catch(() => res.status(500).send({ message: "Произошла ошибка" }));
-// };
-
-
 export const createProduct = async (req: any, res: any, next: any) => {
-    try {
-      const { title, image, category, description, price } = req.body;
-  
-      
-      const product = await Product.create({ title, image, category, description, price });
-      res.send(product);
-    } catch (error) {
-      if (error instanceof mongoose.Error.ValidationError) {
-        return next(new BadRequestError('Validation failed'));
-      }
+  try {
+    const { title, image, category, description, price } = req.body;
 
-      if (error instanceof Error && error.message.includes("E11000")) {
-        return next(
-          new ConflictError("Товар с таким заголовком уже существует.")
-        );
-      }
-    
-      return next(error); // Передаем ошибку дальше для обработки стандартным обработчиком
+    const product = await Product.create({
+      title,
+      image,
+      category,
+      description,
+      price,
+    });
+    res.send(product);
+  } catch (error) {
+    if (error instanceof mongoose.Error.ValidationError) {
+      return next(new BadRequestError("Validation failed"));
     }
-  };
+
+    if (error instanceof Error && error.message.includes("E11000")) {
+      return next(
+        new ConflictError("Товар с таким заголовком уже существует.")
+      );
+    }
+
+    return next(error);
+  }
+};

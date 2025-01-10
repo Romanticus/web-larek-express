@@ -5,7 +5,6 @@ import Product from "../models/product";
 import BadRequestError from "../errors/bad-request-error";
 import ConflictError from "../errors/conflitct-error";
 
-
 export const createOrder = async (req: any, res: any, next: any) => {
   try {
     const { payment, email, phone, address, total, items } = req.body;
@@ -42,7 +41,7 @@ export const createOrder = async (req: any, res: any, next: any) => {
     if (error instanceof mongoose.Error.ValidationError) {
       return next(new BadRequestError("Validation failed"));
     }
-    
+
     return next(error);
   }
 };
