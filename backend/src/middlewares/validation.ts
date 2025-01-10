@@ -8,6 +8,19 @@ export const orderValidation = celebrate({
     phone: Joi.string().required(),
     address: Joi.string().required(),
     total: Joi.number().required(),
-    items: Joi.array().items(Joi.string().length(24)).min(1).required(), // ObjectId имеет длину 24 символа
+    items: Joi.array().items(Joi.string()).min(1).required(),
+  }),
+});
+
+export const productValidation = celebrate({
+  body: Joi.object().keys({
+    title: Joi.string().required(),
+    image: Joi.object().keys({
+      fileName: Joi.string().required(),
+      originalName: Joi.string().required(),
+    }).required(),
+    category: Joi.string().required(),
+    description: Joi.string().optional(),
+    price: Joi.alternatives().try(Joi.number(), Joi.valid(null)).optional().default(null),
   }),
 });

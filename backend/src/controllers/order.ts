@@ -5,7 +5,7 @@ import Product from "../models/product";
 import BadRequestError from "../errors/bad-request-error";
 import ConflictError from "../errors/conflitct-error";
 
-// Контроллер для создания заказа
+
 export const createOrder = async (req: any, res: any, next: any) => {
   try {
     const { payment, email, phone, address, total, items } = req.body;
@@ -42,11 +42,7 @@ export const createOrder = async (req: any, res: any, next: any) => {
     if (error instanceof mongoose.Error.ValidationError) {
       return next(new BadRequestError("Validation failed"));
     }
-    if (error instanceof Error && error.message.includes("E11000")) {
-      return next(
-        new ConflictError("Товар с таким заголовком уже существует.")
-      );
-    }
+    
     return next(error);
   }
 };
