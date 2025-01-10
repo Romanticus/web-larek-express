@@ -1,4 +1,9 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
+
+interface IImage {
+  fileName: string;
+  originalName: string;
+}
 
 interface IProduct {
   title: string;
@@ -8,10 +13,6 @@ interface IProduct {
   price?: number | null;
 }
 
-interface IImage {
-  fileName: string;
-  originalName: string;
-}
 const imageSchema = new mongoose.Schema<IImage>({
   fileName: {
     type: String,
@@ -48,4 +49,4 @@ const productSchema = new mongoose.Schema<IProduct>({
   },
 });
 
-export default mongoose.model<IProduct>("product", productSchema);
+export default mongoose.model<IProduct>('product', productSchema);

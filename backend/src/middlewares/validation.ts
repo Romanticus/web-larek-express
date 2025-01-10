@@ -1,9 +1,9 @@
-import { celebrate, Joi } from "celebrate";
+import { celebrate, Joi } from 'celebrate';
 
 // Схема для создания заказа
 export const orderValidation = celebrate({
   body: Joi.object().keys({
-    payment: Joi.string().valid("card", "online").required(),
+    payment: Joi.string().valid('card', 'online').required(),
     email: Joi.string().email().required(),
     phone: Joi.string().required(),
     address: Joi.string().required(),

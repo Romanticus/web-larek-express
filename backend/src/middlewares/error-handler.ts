@@ -1,13 +1,13 @@
-import BadRequestError from "../errors/bad-request-error";
-import ConflictError from "../errors/conflitct-error";
-import NotFoundError from "../errors/not-found-error";
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from 'express';
+import BadRequestError from '../errors/bad-request-error';
+import ConflictError from '../errors/conflitct-error';
+import NotFoundError from '../errors/not-found-error';
 
 export default function errorHandler(
   err: Error,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   if (err instanceof BadRequestError) {
     return res.status(err.statusCode).send({ message: err.message });
@@ -21,8 +21,7 @@ export default function errorHandler(
     return res.status(err.statusCode).send({ message: err.message });
   }
 
-  console.error(err);
   return res.status(500).send({
-    message: "Произошла ошибка на сервере",
+    message: 'Произошла ошибка на сервере',
   });
 }

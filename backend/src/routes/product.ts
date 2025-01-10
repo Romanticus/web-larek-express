@@ -1,11 +1,11 @@
-import { productValidation } from "../middlewares/validation";
-import { createProduct, getProducts } from "../controllers/products";
-import { Router } from "express";
+import { Router } from 'express';
+import { productValidation } from '../middlewares/validation';
+import { createProduct, getProducts } from '../controllers/products';
 
 const router = Router();
 
-router.get("/", getProducts);
+router.get('/', getProducts);
 
-router.post("/", productValidation, createProduct);
+router.post('/', productValidation, createProduct);
 
 export default router;
